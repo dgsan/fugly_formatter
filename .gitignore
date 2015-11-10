@@ -29,3 +29,4 @@ node_modules
 # Private configuration
 config
 compiled_templates.js
+out.html

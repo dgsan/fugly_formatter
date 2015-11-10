@@ -1,17 +1,23 @@
 var argv = require('yargs')
-    .usage('Usage: $0 [-p|--page <page-name>] [-c|--check] [-k|--classification] [-n|--names]')
+    .usage('Usage: $0 [-p|--page <page-name>] [-c|--check] [-k|--classification] [-n|--names] [-w|--webpage]')
     .alias('c', 'check')
     .alias('p', 'page')
     .alias('k', 'classification')
+    .alias('w', 'webpage')
+    .alias('l', 'list-pages')
     .demand(0)
     .nargs('c', 0)
     .nargs('k', 0)
     .nargs('n', 0)
+    .nargs('w', 0)
+    .nargs('l', 0)
     .nargs('p', 1)
     .describe('p', 'Generate page the given page.')
     .describe('c', 'Check for missing data.')
     .describe('k', 'List the classification for the data entries.')
     .describe('n', 'List org names alphabetically.')
+    .describe('w', 'Generate a web page instead of an html snippet.')
+    .describe('l', 'List available page snippets to generate.')
     .argv;
 
 var Handlebars = require('handlebars');
@@ -88,6 +94,7 @@ var ops = {
     neighborhoodExtract: function(data) {
         var result = [];
         var neighborhoods = {};
+        var color_class = '';
         data.info.forEach(function(item) {
             if (item.classification == "Neighborhood/Activity") {
                 if (item.neighborhood_pref_1.length > 0) {
@@ -96,7 +103,30 @@ var ops = {
             }
         });
         for(var k in neighborhoods) {
-            result.push({name: neighborhoods[k]});
+            switch (neighborhoods[k]) {
+                case 'Science in Art':
+                    color_class = 'science_art_purple';
+                    break;
+                case 'Science of Everyday Life':
+                    color_class = 'science_life_blue';
+                    break;
+                case 'Science of Food':
+                    color_class = 'science_food_yellow';
+                    break;
+                case 'Science of Natural World':
+                    color_class = 'science_nature_green';
+                    break;
+                case 'Science of Tomorrow':
+                    color_class = 'science_tomorrow_fuchsia';      
+                    break;
+                case 'Science of You':
+                    color_class = 'science_you_orange';
+                    break;
+                default:
+                    color_class = ''
+                    break;
+            }
+            result.push({name: neighborhoods[k], color_class: color_class});
         }
         return result.sort(function(a, b) {
             return a.name.localeCompare(b.name);
@@ -126,23 +156,29 @@ var ops = {
             for(var j = 0; j < neighborhoods[i].organizations.length; j++) {
                 neighborhoods[i].organizations[j].books = [];
                 neighborhoods[i].organizations[j].organization = neighborhoods[i].organizations[j].organization_name;
-                
+
                 if (neighborhoods[i].organizations[j].book_1_title.length > 0) {
                     neighborhoods[i].organizations[j].books.push({
                         title: neighborhoods[i].organizations[j].book_1_title, 
-                        author: neighborhoods[i].organizations[j].book_2_author
+                        author: neighborhoods[i].organizations[j].book_1_author,
+                        author_snip: encodeURIComponent(neighborhoods[i].organizations[j].book_1_author),
+                        title_snip: encodeURIComponent(neighborhoods[i].organizations[j].book_1_title)
                     });
                 }
                 if (neighborhoods[i].organizations[j].book_2_title.length > 0) {
                     neighborhoods[i].organizations[j].books.push({
                         title: neighborhoods[i].organizations[j].book_2_title, 
-                        author: neighborhoods[i].organizations[j].book_2_author
+                        author: neighborhoods[i].organizations[j].book_2_author,
+                        author_snip: encodeURIComponent(neighborhoods[i].organizations[j].book_2_author),
+                        title_snip: encodeURIComponent(neighborhoods[i].organizations[j].book_2_title)
                     });
                 }
                 if (neighborhoods[i].organizations[j].book_3_title.length > 0) {
                     neighborhoods[i].organizations[j].books.push({
                         title: neighborhoods[i].organizations[j].book_3_title, 
-                        author: neighborhoods[i].organizations[j].book_3_author
+                        author: neighborhoods[i].organizations[j].book_3_author,
+                        author_snip: encodeURIComponent(neighborhoods[i].organizations[j].book_3_author),
+                        title_snip: encodeURIComponent(neighborhoods[i].organizations[j].book_3_title)
                     });
                 }
 
@@ -157,11 +193,26 @@ var ops = {
         var neighborhoods = ops.organizationExtract(neighborhoods, data);
         var neighborhoods = ops.enlistBooks(neighborhoods);
         
-        console.log(Handlebars.templates.booklist({neighborhoods: neighborhoods}));
+        if (argv.w) {
+            if (argv.p && argv.p == 'booklist') {
+                console.log(Handlebars.templates.html({neighborhoods: neighborhoods, page_name: function(){ return 'booklist';}}));
+            }
+            if (argv.p && argv.p == 'participant-list') {
+
+            }
+        } else {
+            if (argv.p && argv.p == 'booklist') {
+                console.log(Handlebars.templates.booklist({neighborhoods: neighborhoods}));
+            }
+            if (argv.p && argv.p == 'participant-list') {
+
+            }
+        }
     }
 };
 
 Handlebars.registerPartial("book", Handlebars.templates.book);
+Handlebars.registerPartial("booklist", Handlebars.templates.booklist);
 
 request(config.url, function(error, response, body) {
     if (!error && response.statusCode == 200) {
@@ -173,6 +224,12 @@ request(config.url, function(error, response, body) {
             ops.classification(data);
         } else if (argv.n) {
             ops.names(data);
+        } else if (argv.l) {
+            console.log("Available pages:")
+            console.log();
+            console.log('booklist         : Page of recommended books.');
+            console.log('participant-list : Page of participants by Neighborhood and Booth.');
+            console.log();
         } else if (argv.p) {
             ops.format(data);
         } else {
