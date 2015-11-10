@@ -4,6 +4,9 @@
   "description": "Downloads a JSON file, renders some partial HTML templates with the data.",
   "scripts": {
     "test": "echo \"Error: no test specified\" && exit 1",
+    "main": "node main.js",
+    "participant-list": "node main.js -p participant-list",
+    "booklist": "node main.js -p booklist",
     "templates": "handlebars templates/* -f compiled_templates.js -c handlebars" 
   },
   "repository": {

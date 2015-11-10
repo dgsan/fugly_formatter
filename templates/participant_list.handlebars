@@ -1,0 +1,30 @@
+<div class="science-custom-style">
+    <h1>2016 List of Participants</h1>
+    {{#each neighborhoods}}
+        <div>
+            <h2 class="{{color_class}}">{{name}}</h2>
+            {{#each organizations}}
+                <div>
+                    <h3>{{organization}}</h3>
+                    <p>
+                        {{booth_desc}}
+                    </p>
+                    <p>
+                        {{#if organization_url}}
+                            <a href="{{organization_url}}">URL</a> &nbsp;
+                        {{/if}}
+                        {{#if organization_facebook}}
+                            <a href="{{organization_facebook}}">Facebook</a> &nbsp;
+                        {{/if}}
+                        {{#if organization_twitter}}
+                            <a href="{{organization_twitter}}">Twitter</a> &nbsp;
+                        {{/if}}
+                        {{#if organization_instagram}}
+                            <a href="{{organization_instagram}}">Instagram</a>
+                        {{/if}}
+                    </p>
+                </div>
+            {{/each}}
+        </div>
+    {{/each}}
+</div>

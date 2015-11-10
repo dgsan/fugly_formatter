@@ -1,16 +1,23 @@
-var argv = require('yargs')
-    .usage('Usage: $0 [-p|--page <page-name>] [-c|--check] [-k|--classification] [-n|--names] [-w|--webpage]')
+var yargs = require('yargs')
+    .usage('Usage: $0 [-p|--page <page-name> [-w|--webpage]] [-c|--check] [-k|--classification] [-n|--names] [-l|--list-pages] [-h|--help]')
     .alias('c', 'check')
     .alias('p', 'page')
+    .choices('p', ['participant-list', 'booklist'])
     .alias('k', 'classification')
     .alias('w', 'webpage')
     .alias('l', 'list-pages')
-    .demand(0)
+    .alias('n', 'names')
+    .alias('h', 'help')
     .nargs('c', 0)
+    .boolean('c')
     .nargs('k', 0)
+    .boolean('k')
     .nargs('n', 0)
+    .boolean('n')
     .nargs('w', 0)
+    .boolean('w')
     .nargs('l', 0)
+    .boolean('l')
     .nargs('p', 1)
     .describe('p', 'Generate page the given page.')
     .describe('c', 'Check for missing data.')
@@ -18,7 +25,10 @@ var argv = require('yargs')
     .describe('n', 'List org names alphabetically.')
     .describe('w', 'Generate a web page instead of an html snippet.')
     .describe('l', 'List available page snippets to generate.')
-    .argv;
+    .help('h', 'Print this message. (Remember to precompile the templates.)')
+    .wrap(100);
+
+var argv = yargs.argv;
 
 var Handlebars = require('handlebars');
 
@@ -198,14 +208,14 @@ var ops = {
                 console.log(Handlebars.templates.html({neighborhoods: neighborhoods, page_name: function(){ return 'booklist';}}));
             }
             if (argv.p && argv.p == 'participant-list') {
-
+                console.log(Handlebars.templates.html({neighborhoods: neighborhoods, page_name: function(){ return 'participant_list';}}));
             }
         } else {
             if (argv.p && argv.p == 'booklist') {
                 console.log(Handlebars.templates.booklist({neighborhoods: neighborhoods}));
             }
             if (argv.p && argv.p == 'participant-list') {
-
+                console.log(Handlebars.templates.participant_list({neighborhoods: neighborhoods}));
             }
         }
     }
@@ -213,6 +223,7 @@ var ops = {
 
 Handlebars.registerPartial("book", Handlebars.templates.book);
 Handlebars.registerPartial("booklist", Handlebars.templates.booklist);
+Handlebars.registerPartial("participant_list", Handlebars.templates.participant_list);
 
 request(config.url, function(error, response, body) {
     if (!error && response.statusCode == 200) {
@@ -233,7 +244,8 @@ request(config.url, function(error, response, body) {
         } else if (argv.p) {
             ops.format(data);
         } else {
-            console.log("No valid option given.");
+            var message = yargs.help();
+            console.log(message);
         }
 
     }
