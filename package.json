@@ -1,0 +1,26 @@
+{
+  "name": "fugly_formatter",
+  "version": "0.0.1",
+  "description": "Downloads a JSON file, renders some partial HTML templates with the data.",
+  "scripts": {
+    "test": "echo \"Error: no test specified\" && exit 1",
+    "templates": "handlebars templates/* -f compiled_templates.js -c handlebars" 
+  },
+  "repository": {
+    "type": "git",
+    "url": "git+https://github.com/dgsan/fugly_formatter.git"
+  },
+  "dependencies": {
+    "config": "^1.16.0",
+    "handlebars": "^4.0.4",
+    "request": "^2.65.0",
+    "yargs": "^3.29.0"
+  },
+  "author": "dgsan <dgsan@users.noreply.github.com>",
+  "license": "MIT",
+  "bugs": {
+    "url": "https://github.com/dgsan/fugly_formatter/issues"
+  },
+  "homepage": "https://github.com/dgsan/fugly_formatter#readme",
+  "private": true
+}
