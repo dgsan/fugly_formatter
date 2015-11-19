@@ -160,12 +160,33 @@ var ops = {
         return neighborhoods;
     },
 
+    // Also have made this crudely attempt to fix/prefix urls w/o http(s):// parts.
     enlistBooks: function(neighborhoods) {
         for(var i = 0; i < neighborhoods.length; i++) {
             
             for(var j = 0; j < neighborhoods[i].organizations.length; j++) {
                 neighborhoods[i].organizations[j].books = [];
                 neighborhoods[i].organizations[j].organization = neighborhoods[i].organizations[j].organization_name;
+
+                if (neighborhoods[i].organizations[j].organization_url.length > 1 &&
+                    neighborhoods[i].organizations[j].organization_url.substr(0,4) != 'http') {
+                    neighborhoods[i].organizations[j].organization_url = 'http://' + neighborhoods[i].organizations[j].organization_url;
+                }
+
+                if (neighborhoods[i].organizations[j].organization_facebook.length > 1 &&
+                    neighborhoods[i].organizations[j].organization_facebook.substr(0,4) != 'http') {
+                    neighborhoods[i].organizations[j].organization_facebook = 'http://' + neighborhoods[i].organizations[j].organization_facebook;   
+                }
+
+                if (neighborhoods[i].organizations[j].organization_twitter.length > 1 &&
+                    neighborhoods[i].organizations[j].organization_twitter.substr(0,4) != 'http') {
+                    neighborhoods[i].organizations[j].organization_twitter = 'http://' + neighborhoods[i].organizations[j].organization_twitter;
+                }
+
+                if (neighborhoods[i].organizations[j].organization_instagram.length > 1 &&
+                    neighborhoods[i].organizations[j].organization_instagram.substr(0,4) != 'http') {
+                    neighborhoods[i].organizations[j].organization_instagram = 'http://' + neighborhoods[i].organizations[j].organization_instagram;
+                }
 
                 if (neighborhoods[i].organizations[j].book_1_title.length > 0) {
                     neighborhoods[i].organizations[j].books.push({
@@ -251,21 +272,3 @@ request(config.url, function(error, response, body) {
     }
 });
 
-/*
-*  Data structure for templates:
-*
-*    { neighborhoods: [
-*        { name: '', organizations: [
-*            { name: '', 
-*              booth_description: '',
-*              url: '',
-*              facebook: '',
-*              twitter: '',
-*              instagram: ''
-*              books: [
-*                { title: '', author: ''}, ...
-*              ]
-*            }, ...
-*        ]}, ...
-*    ]}
-*/
