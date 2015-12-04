@@ -192,14 +192,18 @@ var ops = {
                     neighborhoods[i].organizations[j].books.push({
                         title: neighborhoods[i].organizations[j].book_1_title, 
                         author: neighborhoods[i].organizations[j].book_1_author,
+                        isbn: neighborhoods[i].organizations[j].book_1_isbn,
+                        isbn_snip: encodeURIComponent(neighborhoods[i].organizations[j].book_1_isbn),
                         author_snip: encodeURIComponent(neighborhoods[i].organizations[j].book_1_author),
-                        title_snip: encodeURIComponent(neighborhoods[i].organizations[j].book_1_title)
+                        title_snip: encodeURIComponent(neighborhoods[i].organizations[j].book_1_title),
                     });
                 }
                 if (neighborhoods[i].organizations[j].book_2_title.length > 0) {
                     neighborhoods[i].organizations[j].books.push({
                         title: neighborhoods[i].organizations[j].book_2_title, 
                         author: neighborhoods[i].organizations[j].book_2_author,
+                        isbn: neighborhoods[i].organizations[j].book_2_isbn,
+                        isbn_snip: encodeURIComponent(neighborhoods[i].organizations[j].book_2_isbn),
                         author_snip: encodeURIComponent(neighborhoods[i].organizations[j].book_2_author),
                         title_snip: encodeURIComponent(neighborhoods[i].organizations[j].book_2_title)
                     });
@@ -208,6 +212,8 @@ var ops = {
                     neighborhoods[i].organizations[j].books.push({
                         title: neighborhoods[i].organizations[j].book_3_title, 
                         author: neighborhoods[i].organizations[j].book_3_author,
+                        isbn: neighborhoods[i].organizations[j].book_2_isbn,
+                        isbn_snip: encodeURIComponent(neighborhoods[i].organizations[j].book_2_isbn),
                         author_snip: encodeURIComponent(neighborhoods[i].organizations[j].book_3_author),
                         title_snip: encodeURIComponent(neighborhoods[i].organizations[j].book_3_title)
                     });

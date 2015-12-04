@@ -1,5 +1,11 @@
 <li>
-    <h4><a href="http://www.amazon.com/gp/search?index=books&amp;field-author={{author_snip}}&amp;field-title={{title_snip}}">{{title}}</a></h4>
+    <h4>
+    {{# if isbn}}
+        <a href="http://www.amazon.com/gp/search?index=books&amp;field-isbn={{isbn_snip}}">{{title}}</a>
+    {{else}}
+        {{title}}
+    {{/if}}
+    </h4>
     {{#if author}}
         <p>by {{author}}</p>
     {{/if}}
